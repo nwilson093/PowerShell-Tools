@@ -1,3 +1,5 @@
+#This script is meant to gather all VM network information for running virutal machines from vCenter.  It uses the VMtools gathered information, so no VMtools = no network info.
+
 $vCenterInstance = "vcenterserver.company.com"
 $vCenterUser = "vcenter_serviceaccount"
 $vCenterPass = Get-Content -Path 'C:\vcenteruserpassword\password.txt'
