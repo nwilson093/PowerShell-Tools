@@ -3,6 +3,7 @@
 AD Group Management GUI Tool
 Nick Wilson - 2018
 https://github.com/nwilson093
+Credit to https://poshgui.com for some GUI guidance
 
 Prerequisites: Windows 7 or later, network connectivity to preferably a DC or machine running AD Web Services, and PowerShell 2.0 or later.
 
