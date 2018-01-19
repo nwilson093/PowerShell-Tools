@@ -5,6 +5,7 @@ Nick Wilson - 2018
 https://github.com/nwilson093
 Credit to https://poshgui.com for some GUI guidance
 
+Description: This is a GUI tool intended for users to add members to specified AD groups.  It can be as static or dynamic as you need.
 Prerequisites: Windows 7 or later, network connectivity to preferably a DC or machine running AD Web Services, and PowerShell 2.0 or later.
 
 #####>
