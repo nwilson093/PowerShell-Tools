@@ -16,9 +16,15 @@ Add-Type -AssemblyName System.Windows.Forms
 $reportEmailAddrTo = "user@company.com"
 $reportEmailAddrFrom = "user@company.com"
 $smtpServer = "smtpserver.company.com"
-$ADDomCom = "ADDomainController.company.com"
+
 #This is for the drop-down menu.  Basically a list of groups to select from.  You can manually populate the list below or change the query to anything.
-$OUQuery = Get-ADGroup -SearchBase "OU=AD_Groups,OU=root,DC=company,DC=com" -Filter *  | Select -ExpandProperty Name
+#These same variables are used 
+$ADAdminUser = 'user@company.com'
+$ADDomCom = "ADDomainController.company.com"
+$ADAdminPassword = Get-Content "C:\Scripts\adpass.txt"
+$ADpass = ConvertTo-SecureString -AsPlainText $ADAdminPassword -Force
+$ADCred = New-Object System.Management.Automation.PSCredential -ArgumentList $ADAdminUsername,$ADpass
+$OUQuery = Invoke-Command -ScriptBlock { Get-ADGroup -SearchBase "OU=AD_Groups,OU=root,DC=company,DC=com" -Filter *  | Select -ExpandProperty Name } -ComputerName $ADDomCom -Credential $ADCred
 
 
 $ADGroupManagement = New-Object system.Windows.Forms.Form
