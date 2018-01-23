@@ -1,10 +1,10 @@
 Add-Type -AssemblyName System.Windows.Forms
 
-$BrivoGroupManagement = New-Object system.Windows.Forms.Form
-$BrivoGroupManagement.Text = "Malwarebytes - Brivo Group Management"
-$BrivoGroupManagement.TopMost = $true
-$BrivoGroupManagement.Width = 457
-$BrivoGroupManagement.Height = 320
+$ADGroupManagement = New-Object system.Windows.Forms.Form
+$ADGroupManagement.Text = "AD Group Manager"
+$ADGroupManagement.TopMost = $true
+$ADGroupManagement.Width = 457
+$ADGroupManagement.Height = 320
 
 $buttonAddUser = New-Object system.windows.Forms.Button
 $buttonAddUser.BackColor = "#0673e9"
@@ -14,14 +14,14 @@ $buttonAddUser.Width = 90
 $buttonAddUser.Height = 47
 $buttonAddUser.location = new-object system.drawing.point(97,200)
 $buttonAddUser.Font = "Calibri,14,style=Bold"
-$BrivoGroupManagement.controls.Add($buttonAddUser)
+$ADGroupManagement.controls.Add($buttonAddUser)
 
 $txtUsername = New-Object system.windows.Forms.TextBox
 $txtUsername.Width = 243
 $txtUsername.Height = 20
 $txtUsername.location = new-object system.drawing.point(126,20)
 $txtUsername.Font = "Microsoft Sans Serif,10"
-$BrivoGroupManagement.controls.Add($txtUsername)
+$ADGroupManagement.controls.Add($txtUsername)
 
 $txtGroupName = New-Object system.windows.Forms.ComboBox
 $txtGroupName.Text = ""
@@ -29,7 +29,7 @@ $txtGroupName.Width = 241
 $txtGroupName.Height = 20
 $txtGroupName.location = new-object system.drawing.point(126,64)
 $txtGroupName.Font = "Microsoft Sans Serif,10"
-$BrivoGroupManagement.controls.Add($txtGroupName)
+$ADGroupManagement.controls.Add($txtGroupName)
 
 $UsernameLabel = New-Object system.windows.Forms.Label
 $UsernameLabel.Text = "Username:"
@@ -38,7 +38,7 @@ $UsernameLabel.Width = 25
 $UsernameLabel.Height = 10
 $UsernameLabel.location = new-object system.drawing.point(30,20)
 $UsernameLabel.Font = "Microsoft Sans Serif,10"
-$BrivoGroupManagement.controls.Add($UsernameLabel)
+$ADGroupManagement.controls.Add($UsernameLabel)
 
 $GroupNameLabel = New-Object system.windows.Forms.Label
 $GroupNameLabel.Text = "Group Name:"
@@ -47,7 +47,7 @@ $GroupNameLabel.Width = 25
 $GroupNameLabel.Height = 10
 $GroupNameLabel.location = new-object system.drawing.point(30,64)
 $GroupNameLabel.Font = "Microsoft Sans Serif,10"
-$BrivoGroupManagement.controls.Add($GroupNameLabel)
+$ADGroupManagement.controls.Add($GroupNameLabel)
 
 $labelSuccess = New-Object system.windows.Forms.Label
 $labelSuccess.Text = "Success!"
@@ -58,7 +58,7 @@ $labelSuccess.Width = 25
 $labelSuccess.Height = 10
 $labelSuccess.location = new-object system.drawing.point(170,130)
 $labelSuccess.Font = "Microsoft Sans Serif,18"
-$BrivoGroupManagement.controls.Add($labelSuccess)
+$ADGroupManagement.controls.Add($labelSuccess)
 
 $buttonExit = New-Object system.windows.Forms.Button
 $buttonExit.Text = "Exit"
@@ -68,7 +68,7 @@ $buttonExit.BackColor = "#0673e9"
 $buttonExit.ForeColor = "#f8f2f2"
 $buttonExit.location = new-object system.drawing.point(251,200)
 $buttonExit.Font = "Microsoft Sans Serif,14"
-$BrivoGroupManagement.controls.Add($buttonExit)
+$ADGroupManagement.controls.Add($buttonExit)
 
 $labelFailure = New-Object system.windows.Forms.Label
 $labelFailure.Text = "Failure! Contact IT "
@@ -79,10 +79,10 @@ $labelFailure.Width = 25
 $labelFailure.Height = 10
 $labelFailure.location = new-object system.drawing.point(126,129)
 $labelFailure.Font = "Microsoft Sans Serif,18"
-$BrivoGroupManagement.controls.Add($labelFailure)
+$ADGroupManagement.controls.Add($labelFailure)
 
 $Icon = [system.drawing.icon]::ExtractAssociatedIcon($PSHOME + "\powershell.exe")
-$BrivoGroupManagement.Icon = $Icon
+$ADGroupManagement.Icon = $Icon
 
 $dateTime = Get-Date
 
@@ -98,14 +98,13 @@ if ($txtUsername.Text -ge 1 -and $txtGroupName.Text -ge 1)
         $ADUsername = $txtUsername.text
         $ADGroupName = $txtGroupName.text
 
-        #Add-ADGroupMember -Identity "$ADGroupName" -Members "$ADUsername" -Confirm:$false
 
-        $Username = 'corp\svc_vmwauto'
-        $Password = 'nxZnsR87XyxC,e=knA'
+        $Username = 'company\username'
+        $Password = Get-Content "C:\Scripts\vmwpass.txt"
         $pass = ConvertTo-SecureString -AsPlainText $Password -Force
         $Cred = New-Object System.Management.Automation.PSCredential -ArgumentList $Username,$pass
 
-        Invoke-Command -ScriptBlock {param($ADUsername, $ADGroupName) Add-ADGroupMember -Identity "$ADGroupName" -Members "$ADUsername" -Confirm:$false } -ComputerName "sc1dc1.corp.mb-internal.com" -Credential $Cred -ArgumentList $ADUsername, $ADGroupName
+        Invoke-Command -ScriptBlock {param($ADUsername, $ADGroupName) Add-ADGroupMember -Identity "$ADGroupName" -Members "$ADUsername" -Confirm:$false } -ComputerName "domain-controller.company.com" -Credential $Cred -ArgumentList $ADUsername, $ADGroupName
 
     }
 
@@ -116,26 +115,26 @@ if ($txtUsername.Text -lt 1 -or$txtGroupName.Text -lt 1)
     }
 
 
-Send-MailMessage -To "nwilson@malwarebytes.com" -From "brivo-noreply@malwarebytes.com" -Body "$env:Username ran the Brivo Group Manager at $dateTime - Added $ADUsername to $ADGroupName" -Subject "$env:Username ran the Brivo Group Manager" -SmtpServer "malwarebytes-com.mail.protection.outlook.com" -Port "25"
+Send-MailMessage -To "user@company.com" -From "otheruser@company.com" -Body "$env:Username ran the AD Group Manager at $dateTime - Added $ADUsername to $ADGroupName" -Subject "$env:Username ran the AD Group Manager" -SmtpServer "smtp.company.com" -Port "25"
 
 })
 
 
 $buttonExit.Add_Click({ # closes the form
-    $BrivoGroupManagement.Close()
+    $ADGroupManagement.Close()
 })
 
-$BrivoGroupManagement.Add_Load({
-    $txtGroupName.items.add("sec_brivo_engineer")
-    $txtGroupName.items.add("sec_brivo_facilities")
-    $txtGroupName.items.add("sec_brivo_fitness-center")
-    $txtGroupName.items.add("sec_brivo_finance-hr")
-    $txtGroupName.items.add("sec_brivo_general")
-    $txtGroupName.items.add("sec_brivo_general-under21")
-    $txtGroupName.items.add("sec_brivo_limited")
-    $txtGroupName.items.add("sec_brivo_marketing")
-    $txtGroupName.items.add("sec_brivo_training")
+$ADGroupManagement.Add_Load({
+    $txtGroupName.items.add("sec_AD_engineer")
+    $txtGroupName.items.add("sec_AD_facilities")
+    $txtGroupName.items.add("sec_AD_fitness-center")
+    $txtGroupName.items.add("sec_AD_finance-hr")
+    $txtGroupName.items.add("sec_AD_general")
+    $txtGroupName.items.add("sec_AD_general-under21")
+    $txtGroupName.items.add("sec_AD_limited")
+    $txtGroupName.items.add("sec_AD_marketing")
+    $txtGroupName.items.add("sec_AD_training")
 })
 
-[void]$BrivoGroupManagement.ShowDialog()
-$BrivoGroupManagement.Dispose()
+[void]$ADGroupManagement.ShowDialog()
+$ADGroupManagement.Dispose()
