@@ -1,4 +1,4 @@
-$Groups = Get-ADGroup -Filter * -SearchBase 'OU=Brivo,OU=Security Groups,OU=MB-INTERNAL,DC=corp,DC=mb-internal,DC=com'
+$Groups = Get-ADGroup -Filter * -SearchBase 'OU=Brivo,OU=Security Groups,OU=INTERNAL,DC=corp,DC=internal,DC=com'
 
 $Results = foreach( $Group in $Groups )
 {
